@@ -7,7 +7,7 @@
 //  - parameter edition in KEY5 mode
 
 CFLAGS=-I$(PROJECT_DIR)/minidisplay_ui/u8g2/csrc;
-CPPFLAGS=-I$(PROJECT_DIR)/minidisplay_ui/u8g2/csrc;
+CPPFLAGS=-I$(PROJECT_DIR)/minidisplay_ui/u8g2/csrc; 
 ************************************************************************/
 
 #ifndef __MiniDisplay_UI_H__
@@ -177,6 +177,7 @@ class MiniDisplay_UI
         U8G2* u8g2;                     // display screen library object
         unsigned int fDisplayWidth;     // width of the screen
         unsigned int fDisplayHeight;    // Height of the screen
+        bool fRotate;                   // if true rotate the screen to 180°
         unsigned int fCarWidth;
         unsigned int fCarHeight;
         uint8_t fUpPin;                 //UI pins
@@ -203,7 +204,7 @@ class MiniDisplay_UI
         MiniDisplay_UI();
         ~MiniDisplay_UI();
         bool InitDisplay(const char* displaytype, const uint8_t i2cbus, const uint8_t i2cadress,    // initialize the display screen object
-                         unsigned int displaywidth = 16, unsigned int displayhight = 8);
+                         unsigned int displaywidth = 16, unsigned int displayhight = 8, bool rotate = false;);
         bool InitUi(const uint8_t uppin, const uint8_t downpin, const uint8_t selectpin,            // initialize the UI with the bela digital input pin
                     const uint8_t leftpin=-1, const uint8_t rightpin=-1);
                     

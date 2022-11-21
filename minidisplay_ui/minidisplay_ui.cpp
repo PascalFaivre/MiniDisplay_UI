@@ -1,5 +1,5 @@
 
-#include "minidisplay_ui.h"
+#include "minidisplay_ui.h" 
 
 bool PinEvent(bool newstate, bool& currentstate)
 {
@@ -12,14 +12,14 @@ bool PinEvent(bool newstate, bool& currentstate)
 
 void MDP_Parameter::SyncFromRefValue()
 {
-    if(!fEditable && fValue != *fRefValue) {
+    if(fRefValue && !fEditable && fValue != *fRefValue) {
         fValue = *fRefValue;
         fChanged = true;
     }
 }
 void MDP_Parameter::SyncToRefValue()
 {
-   if(fEditable && fValue != *fRefValue) {
+   if(fRefValue && fEditable && fValue != *fRefValue) {
         *fRefValue = fValue;        
     } 
 }
@@ -307,7 +307,7 @@ void MD_Page::Update(U8G2* u8g2, bool editmode)
         if(cntparam > (fHeightWindow-2))
             break;
     }
-    // fChanged = false; //cause segmentation fault when not commented ???
+    fChanged = false;
 }
   
 void MD_Page::SetChanged(bool changed)
@@ -398,7 +398,7 @@ MiniDisplay_UI::~MiniDisplay_UI()
 }
 
 bool MiniDisplay_UI::InitDisplay(const char* displaytype, const uint8_t i2cbus, const uint8_t i2cadress,
-                                 unsigned int displaywidth, unsigned int displayhight)
+                                 unsigned int displaywidth, unsigned int displayhight, bool rotate)
 {
     if(strcasecmp(displaytype, "U8G2_SH1106_128X64_NONAME_F_HW_I2C_LINUX") == 0) {
        u8g2 = new U8G2_SH1106_128X64_NONAME_F_HW_I2C_LINUX(U8G2_R0, i2cbus, i2cadress);
@@ -417,6 +417,8 @@ bool MiniDisplay_UI::InitDisplay(const char* displaytype, const uint8_t i2cbus, 
     u8g2->initDisplay();
     u8g2->clearDisplay();
     u8g2->setPowerSave(0);
+    fRotate= rotate;
+    u8g2->setFlipMode(fRotate);
     int cw = u8g2->getDisplayWidth() / displaywidth;
     int ch = u8g2->getDisplayHeight() / displayhight;
 
@@ -430,7 +432,6 @@ bool MiniDisplay_UI::InitDisplay(const char* displaytype, const uint8_t i2cbus, 
             break;       
         }
     }    
-    //u8g2->setFont(u8g2_font_6x10_tf);
     u8g2->setFontMode(1);
     u8g2->setFontRefHeightText();
     u8g2->setFontPosTop();
@@ -499,10 +500,12 @@ void MiniDisplay_UI::UpdateUI(BelaContext* context)
         } else if(fUIMode == MD_UIMode::KEY5) {
             if(fState == MD_UIState::PARAMETER_EDIT) {
                 fState = MD_UIState::PARAMETER_NAV;
+                fPages[fCurrentPage]->SetChanged(true);
             }
             else {
                 if(fPages[fCurrentPage]->CanEditParameter())
                     fState = MD_UIState::PARAMETER_EDIT;
+                    fPages[fCurrentPage]->SetChanged(true);
             }
         }
     } else if(fLeftPin >= 0 && PinEvent(digitalRead(context, 0, fLeftPin), fLeftPinState)) {
