@@ -35,3 +35,4 @@ Notes :
         il est facile d'en ajouter ca la librairie u8g2 en supporte enormément.
     - Le rafraichisement du buffer de l'ecran via i2c est très lent (env 30ms pour un ecran de 128x64 pixels) 
         donc si vous utilisez des capteurs en i2c il est preferable que les ecrans et les capteurs soient sur un bus i2c différent.
+ 
