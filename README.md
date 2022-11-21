@@ -3,9 +3,9 @@
 Permet l'affichage et l'edition de parametres organisés sous forme de pages sur des ecran oled ou lcd communiquant via un bus i2c.
 La navigation entre les pages et les paramètres est assurée pas soit 3 entrées digitales (lecture uniquement), soit 5 entrées digitales (lecture / edition).
 Plateforme supportée : Bela.
-Utilise la librairie u8g2 modifié par Guilo Moro pour etre utilisable sur Bela
+Utilise la librairie [u8g2](https://github.com/olikraus/u8g2) adaptée par [Giulio Moro pour etre utilisable sur Bela](https://github.com/giuliomoro/O2O)
 
-Fonctionnalités :
+## Fonctionnalités :
     - dimensions de l'ecran (en caractères) configurable (la taille de la font est déterminé par ce parametre)
     - ajout / suppression de pages
     - ajout / suppression de parametres. la valeur d'un parametre est de type double. il peut etre affiché en décimal, entier ou booleen
@@ -15,11 +15,11 @@ Fonctionnalités :
     - gestion dynamique du rafraichissement de l'écran (est rafraichit uniquements quand des changements ont eu lieu sur la fenetre d'affichage (valeur, selection, page))
     
 
-Utilisation :
+## Utilisation :
     voir exemple
 
 
-TODO :
+## TODO :
     - type de page : Information ( pas de parametres mais juste des lignes de texte)
     - type de page : Boot  ( page auto définie par un fichier présent dans le dossier project de bela contenant les différents projets bootable. 
                                           Sur une selection et validation d'un de ceux-ci bela redemarrera sur le project en question)
@@ -29,7 +29,7 @@ TODO :
     - intégration à Faust2bela
     
     
-Notes :
+## Notes :
     - Actuellements 3 types d'écrans sont supportés :
         "U8G2_SH1106_128X64_NONAME_F_HW_I2C_LINUX", "U8G2_SSD1306_128X64_NONAME_F_HW_I2C_LINUX", "U8G2_SSD1309_128X64_NONAME2_F_HW_I2C_LINUX".
         il est facile d'en ajouter ca la librairie u8g2 en supporte enormément.
