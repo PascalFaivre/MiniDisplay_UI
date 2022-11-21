@@ -24,7 +24,7 @@ using namespace std;
 
 #define DISPLAY_WIDTH 16
 #define DISPLAY_HEIGHT 5
-#define PARAMETER_SIZE 10  
+
 
 
 // font description in the fontbank
@@ -39,7 +39,7 @@ struct MD_Font
 // type of parameters for formatting
 enum MDP_ParamDisplayType
 {
-        FLOAT = 0,
+        DEC = 0,
         INT,
         BOOL,
         STRING
@@ -77,15 +77,14 @@ class MDP_Parameter
         string GetLabel();
         double GetValue();
         MDP_ParamDisplayType GetDisplayType();
-        bool IsReadOnly();
-        
+        bool IsEditable();
         bool SetValue(double value);
         
         void UpdateValue(int step);
         
         bool IsChanged(bool reset = true);
         
-        virtual string GetParameterDisplay(unsigned int width);
+        virtual string GetParameterDisplay(unsigned int width, int carwidth);
         virtual void Update(U8G2* u8g2, int x, int y, int width, int carwidth, int carhight, bool selected, bool editmode);    
 };
 
@@ -119,7 +118,7 @@ class MD_Page
         int GetCurrentSelection();
         int GetSelectionInWindow();
         
-        string GetTitle();
+        string GetName();
                       
         bool SetParameterValue(const string& Label, double value);
         bool SetParameterValue(unsigned int index, double value);
@@ -129,9 +128,6 @@ class MD_Page
         
         double GetParameterValue(const string& Label);
         double GetParameterValue(unsigned int index);
-        
-        string GetParameterDisplay(const string& Label);
-        string GetParameterDisplay(unsigned int index);
         
         virtual void Update(U8G2* u8g2, bool editmode = false);
         
@@ -161,7 +157,7 @@ class MiniDisplay_UI
                 PARAMETER_NAV,
                 PARAMETER_EDIT
         };
-        vector<MD_Font> gMD_FontBank = {
+        vector<MD_Font> gMD_FontBank = {  
             {4, 6, u8g2_font_4x6_tf},
             {5, 7, u8g2_font_5x7_tf},
             {5, 8, u8g2_font_5x8_tf},
@@ -192,9 +188,9 @@ class MiniDisplay_UI
         bool fSelectPinState;
         vector<MD_Page*> fPages;        // Page contener
         
-        int fCurrentPage;      // idx of the Displaying page
+        int fCurrentPage;               // idx of the Displaying page
         MD_UIMode fUIMode;              // mode of ui
-        MD_UIState fState;              
+        MD_UIState fState;              // state of ui
         bool fChanged;
         
         void EventUpDownKey(int step);
@@ -204,12 +200,12 @@ class MiniDisplay_UI
         MiniDisplay_UI();
         ~MiniDisplay_UI();
         bool InitDisplay(const char* displaytype, const uint8_t i2cbus, const uint8_t i2cadress,    // initialize the display screen object
-                         unsigned int displaywidth = 16, unsigned int displayhight = 8, bool rotate = false;);
+                         unsigned int displaywidth = 16, unsigned int displayhight = 8, bool rotate = false);
         bool InitUi(const uint8_t uppin, const uint8_t downpin, const uint8_t selectpin,            // initialize the UI with the bela digital input pin
                     const uint8_t leftpin=-1, const uint8_t rightpin=-1);
                     
         int AddPage(MD_Page* newpage);
-        MD_Page* GetPage(const string& title);
+        MD_Page* GetPage(const string& name);
         MD_Page* GetPage(unsigned int index);
         
         void UpdateUI(BelaContext* context);                                                        // check the pins states and uptate the displaying informations

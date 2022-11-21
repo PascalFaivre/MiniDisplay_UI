@@ -1,0 +1,6 @@
+{
+  "fileName": "render.cpp",
+  "CLArgs": {
+    "make": "CFLAGS=-I$(PROJECT_DIR)/u8g2/csrc;\nCPPFLAGS=-I$(PROJECT_DIR)/u8g2/csrc;"
+  }
+}

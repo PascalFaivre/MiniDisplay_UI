@@ -41,6 +41,19 @@ MDP_Parameter::MDP_Parameter(string label,double value, MDP_ParamDisplayType dis
     fMinValue = minval;
     fMaxValue = maxval;
     fStep = step;
+    switch(fDisplayType)
+    {
+        case MDP_ParamDisplayType::INT:
+            fStep = round(fStep);
+            fMinValue = round(fMinValue);
+            fMaxValue = round(fMaxValue); 
+            break;
+        case MDP_ParamDisplayType::BOOL:
+            fStep = 1;
+            fMinValue = 0;
+            fMaxValue = 1;
+            break;
+    };
     fChanged = true;
 }
 
@@ -63,9 +76,9 @@ MDP_ParamDisplayType MDP_Parameter::GetDisplayType()
     return fDisplayType;
 }
  
-bool MDP_Parameter::IsReadOnly()
+bool MDP_Parameter::IsEditable()
 {
-    return !fEditable;
+    return fEditable;
 }
             
 bool MDP_Parameter::SetValue(double value)
@@ -104,20 +117,20 @@ bool MDP_Parameter::IsChanged(bool reset)
     return result;
 }
             
-string MDP_Parameter::GetParameterDisplay(unsigned int width)
+string MDP_Parameter::GetParameterDisplay(unsigned int width, int carwidth)
 {
     char buffer[width+1];
     buffer[0]=0;
     string label=fLabel;
-    if(label.size() > (width-PARAMETER_SIZE))
-        label.resize(width-PARAMETER_SIZE);
+    if(label.size() > (width-carwidth))
+        label.resize(width-carwidth);
     switch(fDisplayType)
     {
-        case MDP_ParamDisplayType::FLOAT:
+        case MDP_ParamDisplayType::DEC:
             sprintf(buffer, "%s: %3.3f", label.c_str(), fValue);
             break;
         case MDP_ParamDisplayType::INT:
-            sprintf(buffer, "%s: %*d", label.c_str(), (int) fValue);
+            sprintf(buffer, "%s: %d", label.c_str(), (int) fValue);
             break;
         case MDP_ParamDisplayType::BOOL:
             string val;
@@ -134,17 +147,19 @@ string MDP_Parameter::GetParameterDisplay(unsigned int width)
 
 void MDP_Parameter::Update(U8G2* u8g2, int x, int y, int width, int carwidth, int carhight,bool selected, bool editmode)
 {
-    string line = GetParameterDisplay(width);
+    string line = GetParameterDisplay(width, carwidth);
     if(editmode)
     	line += "<";
     if(selected) {                                               // draw the current parameter                 
             u8g2->drawBox(0, y, line.size()*carwidth, carhight);
             u8g2->setDrawColor(0);
-            u8g2->drawStr(0, y, line.c_str()); 
+            //u8g2->drawStr(0, y, line.c_str()); 
+            u8g2->drawUTF8(0, y, line.c_str()); 
             u8g2->setDrawColor(1);
         }
         else {
-            u8g2->drawStr(0, y, line.c_str());                    
+            //u8g2->drawStr(0, y, line.c_str());                    
+            u8g2->drawUTF8(0, y, line.c_str());
         }
 }
 
@@ -225,7 +240,7 @@ int MD_Page::GetSelectionInWindow()
    return fCurrentParam-fCurrentScroll; 
 }
 
-string MD_Page::GetTitle()
+string MD_Page::GetName()
 {
     return fName;
 }
@@ -245,7 +260,7 @@ bool MD_Page::SetParameterValue(unsigned int index, double value)
 
 bool MD_Page::CanEditParameter()
 {
-    return !fParameters[fCurrentParam]->IsReadOnly();
+    return fParameters[fCurrentParam]->IsEditable();
 }
 
 void MD_Page::UpdateParameterValue(int step)
@@ -266,25 +281,13 @@ double MD_Page::GetParameterValue(unsigned int index)
     return 0;
 }
                 
-string MD_Page::GetParameterDisplay(const string& Label)
-{
-    return "";
-}
-
-string MD_Page::GetParameterDisplay(unsigned int index)
-{
-    if(index < fParameters.size()) {
-        return fParameters[index]->GetParameterDisplay(DISPLAY_WIDTH);
-    }
-    return "";
-}
-
 void MD_Page::Update(U8G2* u8g2, bool editmode)
 {
     
     u8g2->drawRBox(0,0,fWidthWindow*fCarWidth,fCarHeight-1,2);
     u8g2->setDrawColor(0);
-    u8g2->drawStr((fWidthWindow-fName.size())*fCarWidth/2, 0, fName.c_str());                                          //draw the title of the page
+    //u8g2->drawStr((fWidthWindow-fName.size())*fCarWidth/2, 0, fName.c_str());                                          //draw the title of the page
+    u8g2->drawUTF8((fWidthWindow-fName.size())*fCarWidth/2, 0, fName.c_str());
     u8g2->setDrawColor(1);
     int cntparam=0;
     for( int i=fCurrentScroll; i<fParameters.size(); i++) {                     // get the parameters that are in the draw window
@@ -341,9 +344,9 @@ void MiniDisplay_UI::EventUpDownKey(int step)
     } else if(fState == MD_UIState::PARAMETER_NAV) {
         MD_Page* curpage = fPages[fCurrentPage];
         if(step < 0)
-            curpage->Previous();
-        else
             curpage->Next();
+        else
+            curpage->Previous();
     } else if(fState == MD_UIState::PARAMETER_EDIT) {
         MD_Page* curpage = fPages[fCurrentPage];
         curpage->UpdateParameterValue(step);
@@ -467,10 +470,10 @@ int MiniDisplay_UI::AddPage(MD_Page* newpage)
     return fPages.size() -1;
 }
 
-MD_Page* MiniDisplay_UI::GetPage(const string& title)
+MD_Page* MiniDisplay_UI::GetPage(const string& name)
 {
    for(int i=0; i<fPages.size(); i++) {
-       if(fPages[i]->GetTitle() == title)
+       if(fPages[i]->GetName() == name)
            return fPages[i];
    }       
    return NULL;
