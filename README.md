@@ -1,5 +1,7 @@
 # MiniDisplay_UI
 
+travail en cours...
+
 Permet l'affichage et l'edition de parametres organisés sous forme de pages sur des ecrans oled ou lcd communiquant via un bus i2c.
 La navigation entre les pages et les paramètres est assurée pas soit 3 entrées digitales (lecture uniquement), soit 5 entrées digitales (lecture / edition).
 - Plateforme supportée : Bela.
@@ -27,6 +29,7 @@ La navigation entre les pages et les paramètres est assurée pas soit 3 entrée
 
 
 ## TODO :
+- fonctions de suppression (pages et paramètres)
 - type de page : Information ( pas de parametres mais juste des lignes de texte)
 - type de parametre : liste déroulante
 - type de page : Boot  ( page auto définie par un fichier présent dans le dossier project de bela contenant les différents projets bootable. 
