@@ -1,6 +1,6 @@
 # MiniDisplay_UI
 
-Permet l'affichage et l'edition de parametres organisés sous forme de pages sur des ecran oled ou lcd communiquant via un bus i2c.
+Permet l'affichage et l'edition de parametres organisés sous forme de pages sur des ecrans oled ou lcd communiquant via un bus i2c.
 La navigation entre les pages et les paramètres est assurée pas soit 3 entrées digitales (lecture uniquement), soit 5 entrées digitales (lecture / edition).
 - Plateforme supportée : Bela.
 - Utilise la librairie [u8g2](https://github.com/olikraus/u8g2) adaptée par [Giulio Moro pour etre utilisable sur Bela](https://github.com/giuliomoro/O2O)
@@ -16,13 +16,14 @@ La navigation entre les pages et les paramètres est assurée pas soit 3 entrée
 - ajout / suppression de pages
 - ajout / suppression de parametres. la valeur d'un parametre est de type double. il peut etre affiché en décimal, entier ou booleen
 - navigation à 3 touches en lecture et a 5 touches en lecture et edition
+- scrolling vertical pour les pages contenant beaucoup de parametres
 - edition du parametre en cours de selection via l'interface de navigation
 - liaison possible d'un parametre a une valeur externe via la fourniture d'un pointeur sur celle-ci a la creation du parametre
-- gestion dynamique du rafraichissement de l'écran (est rafraichit uniquements quand des changements ont eu lieu sur la fenetre d'affichage (valeur, selection, page))
+- gestion dynamique du rafraichissement de l'écran (est rafraichit uniquement quand des changements ont eu lieu sur la fenetre d'affichage (valeur, selection, page, edition))
     
 
 ## Utilisation :
-    voir exemple : render.cpp
+    voir exemple : render.cpp (permet de constater les différentes fonctionnalités)
 
 
 ## TODO :
@@ -30,7 +31,7 @@ La navigation entre les pages et les paramètres est assurée pas soit 3 entrée
 - type de parametre : liste déroulante
 - type de page : Boot  ( page auto définie par un fichier présent dans le dossier project de bela contenant les différents projets bootable. 
                                       Sur une selection et validation d'un de ceux-ci bela redemarrera sur le project en question)
-- type de page : Bargraph (la valeur des parametres est presenté en bargraph vertical)
+- type de page : Bargraph (la valeur des parametres est presentée en bargraph vertical)
 - type de page : Trill_Setup ( page auto définie permetant de modifier les reglages des capteurs trill (prescaler, threshold...) present sur le systeme)
 - utilisation possible d'un capteur trill pour l'edition de parametres
 - intégration à Faust2bela
